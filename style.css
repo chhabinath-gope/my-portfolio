@@ -20,6 +20,9 @@
     --primary: #6366f1;
     --primary-light: #818cf8;
 
+    --blue: #38bdf8;
+    --cyan: #22d3ee;
+
     --border: rgba(148, 163, 184, 0.15);
 
     --shadow:
@@ -375,7 +378,10 @@ a {
 }
 
 
-/* ================= PROFILE ================= */
+/* =========================================================
+   PROFILE PHOTO
+   Professional Indigo → Blue → Cyan Frame
+   ========================================================= */
 
 .profile-container {
     position: relative;
@@ -388,6 +394,8 @@ a {
     display: grid;
 
     place-items: center;
+
+    isolation: isolate;
 
     animation:
         profileAppear 1s ease 0.15s both;
@@ -407,55 +415,149 @@ a {
     }
 }
 
+
+/* Outer soft atmospheric glow */
+
 .profile-glow {
     position: absolute;
 
-    width: 265px;
-    height: 265px;
+    width: 300px;
+    height: 300px;
 
     border-radius: 50%;
 
     background:
         radial-gradient(
             circle,
-            rgba(99, 102, 241, 0.44),
-            rgba(99, 102, 241, 0.05) 65%,
+            rgba(99, 102, 241, 0.36) 0%,
+            rgba(56, 189, 248, 0.16) 38%,
+            rgba(34, 211, 238, 0.06) 58%,
             transparent 72%
         );
 
     filter:
-        blur(8px);
+        blur(14px);
 
     animation:
-        glowPulse 4s ease-in-out infinite;
+        glowPulse 4.5s ease-in-out infinite;
+
+    z-index: -2;
 }
 
 @keyframes glowPulse {
+
     0%,
     100% {
         transform:
-            scale(0.95);
+            scale(0.94);
 
         opacity:
-            0.75;
+            0.72;
     }
 
     50% {
         transform:
-            scale(1.07);
+            scale(1.06);
 
         opacity:
             1;
     }
 }
 
+
+/* Gradient ring */
+
+.profile-container::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        314px;
+
+    height:
+        314px;
+
+    border-radius:
+        50%;
+
+    background:
+        conic-gradient(
+            from 210deg,
+            var(--primary),
+            var(--blue),
+            var(--cyan),
+            var(--primary-light),
+            var(--primary)
+        );
+
+    animation:
+        profileRing 7s linear infinite;
+
+    z-index:
+        0;
+
+    box-shadow:
+        0 0 24px rgba(99, 102, 241, 0.20),
+        0 0 48px rgba(56, 189, 248, 0.10);
+}
+
+
+/* Creates a dark inner surface,
+   leaving only a thin gradient border */
+
+.profile-container::after {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        304px;
+
+    height:
+        304px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--bg);
+
+    z-index:
+        1;
+}
+
+@keyframes profileRing {
+    from {
+        transform:
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* Actual profile image */
+
 .profile-photo {
-    position: relative;
+    position:
+        relative;
 
-    z-index: 2;
+    z-index:
+        2;
 
-    width: 300px;
-    height: 300px;
+    width:
+        294px;
+
+    height:
+        294px;
 
     object-fit:
         cover;
@@ -464,10 +566,13 @@ a {
         50%;
 
     border:
-        5px solid rgba(255, 255, 255, 0.08);
+        3px solid rgba(7, 11, 20, 0.92);
 
     box-shadow:
-        0 24px 65px rgba(0, 0, 0, 0.40);
+        0 22px 58px rgba(0, 0, 0, 0.42);
+
+    background:
+        var(--bg);
 }
 
 
@@ -896,8 +1001,19 @@ a {
         linear-gradient(
             90deg,
             var(--primary),
-            #38bdf8
+            var(--blue)
         );
+}
+
+.project-card h3 {
+    font-size:
+        clamp(26px, 3.8vw, 37px);
+
+    letter-spacing:
+        -0.9px;
+
+    line-height:
+        1.15;
 }
 
 .project-number {
@@ -933,17 +1049,6 @@ a {
 
     margin-bottom:
         15px;
-}
-
-.project-card h3 {
-    font-size:
-        clamp(26px, 3.8vw, 37px);
-
-    letter-spacing:
-        -0.9px;
-
-    line-height:
-        1.15;
 }
 
 .project-card > p {
@@ -1053,23 +1158,6 @@ a {
 
     box-shadow:
         none;
-}
-
-
-/* ================= PROJECT IMAGES ================= */
-
-.project-card img {
-    transition:
-        transform 0.35s ease,
-        filter 0.35s ease;
-}
-
-.project-card a:hover img {
-    transform:
-        scale(1.025);
-
-    filter:
-        brightness(1.08);
 }
 
 
@@ -1205,37 +1293,7 @@ footer p {
 }
 
 
-/* ================= ANIMATION ================= */
-
-.section,
-.project-card,
-.experience-card {
-    animation:
-        sectionAppear 0.8s ease both;
-}
-
-@keyframes sectionAppear {
-    from {
-        opacity:
-            0;
-
-        transform:
-            translateY(17px);
-    }
-
-    to {
-        opacity:
-            1;
-
-        transform:
-            translateY(0);
-    }
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
+/* ================= TABLET ================= */
 
 @media (max-width: 1050px) {
 
@@ -1256,9 +1314,7 @@ footer p {
 }
 
 
-/* =========================================================
-   MOBILE / TABLET
-   ========================================================= */
+/* ================= MOBILE / TABLET ================= */
 
 @media (max-width: 850px) {
 
@@ -1272,8 +1328,6 @@ footer p {
             none;
     }
 
-
-    /* MOBILE HERO */
 
     .hero {
         grid-template-columns:
@@ -1292,8 +1346,6 @@ footer p {
             38px 0 68px;
     }
 
-
-    /* PHOTO FIRST ON MOBILE */
 
     .profile-container {
         order:
@@ -1317,18 +1369,34 @@ footer p {
 
     .profile-photo {
         width:
-            225px;
+            218px;
 
         height:
-            225px;
+            218px;
+    }
+
+    .profile-container::before {
+        width:
+            234px;
+
+        height:
+            234px;
+    }
+
+    .profile-container::after {
+        width:
+            224px;
+
+        height:
+            224px;
     }
 
     .profile-glow {
         width:
-            205px;
+            235px;
 
         height:
-            205px;
+            235px;
     }
 
 
@@ -1358,9 +1426,7 @@ footer p {
 }
 
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
+/* ================= MOBILE ================= */
 
 @media (max-width: 650px) {
 
@@ -1391,8 +1457,6 @@ footer p {
     }
 
 
-    /* SMALLER MOBILE PHOTO */
-
     .profile-container {
         width:
             225px;
@@ -1403,22 +1467,36 @@ footer p {
 
     .profile-photo {
         width:
-            200px;
+            190px;
 
         height:
-            200px;
+            190px;
+    }
+
+    .profile-container::before {
+        width:
+            204px;
+
+        height:
+            204px;
+    }
+
+    .profile-container::after {
+        width:
+            194px;
+
+        height:
+            194px;
     }
 
     .profile-glow {
         width:
-            182px;
+            205px;
 
         height:
-            182px;
+            205px;
     }
 
-
-    /* MOBILE TYPOGRAPHY */
 
     .small-title {
         font-size:
@@ -1459,8 +1537,6 @@ footer p {
     }
 
 
-    /* MOBILE BUTTONS */
-
     .hero-buttons {
         gap:
             9px;
@@ -1480,8 +1556,6 @@ footer p {
             12px;
     }
 
-
-    /* SECTION HEADINGS */
 
     .section-heading {
         margin-bottom:
@@ -1504,8 +1578,6 @@ footer p {
             -1.2px;
     }
 
-
-    /* ABOUT */
 
     .about-card {
         padding:
@@ -1532,8 +1604,6 @@ footer p {
     }
 
 
-    /* ABOUT STATS */
-
     .about-stats {
         gap:
             9px;
@@ -1558,9 +1628,7 @@ footer p {
     }
 
 
-    /* =================
-       COMPACT SKILLS
-       ================= */
+    /* COMPACT SKILLS */
 
     .skills-grid {
         grid-template-columns:
@@ -1611,8 +1679,6 @@ footer p {
             1.4;
     }
 
-
-    /* EXPERIENCE */
 
     .experience-card {
         padding:
@@ -1677,8 +1743,6 @@ footer p {
             4px 7px;
     }
 
-
-    /* PROJECT */
 
     .project-card {
         padding:
@@ -1754,8 +1818,6 @@ footer p {
     }
 
 
-    /* CONTACT */
-
     .contact-section {
         padding-bottom:
             68px;
@@ -1792,8 +1854,6 @@ footer p {
     }
 
 
-    /* FOOTER */
-
     footer {
         width:
             calc(100% - 32px);
@@ -1809,9 +1869,7 @@ footer p {
 }
 
 
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
+/* ================= SMALL PHONES ================= */
 
 @media (max-width: 400px) {
 
@@ -1842,18 +1900,34 @@ footer p {
 
     .profile-photo {
         width:
-            187px;
+            177px;
 
         height:
-            187px;
+            177px;
+    }
+
+    .profile-container::before {
+        width:
+            191px;
+
+        height:
+            191px;
+    }
+
+    .profile-container::after {
+        width:
+            181px;
+
+        height:
+            181px;
     }
 
     .profile-glow {
         width:
-            172px;
+            178px;
 
         height:
-            172px;
+            178px;
     }
 
 
@@ -1861,7 +1935,6 @@ footer p {
         font-size:
             clamp(41px, 13vw, 59px);
     }
-
 
     .hero h2 {
         font-size:
@@ -1879,8 +1952,6 @@ footer p {
             100%;
     }
 
-
-    /* EVEN MORE COMPACT SKILLS */
 
     .skills-grid {
         gap:
@@ -1930,9 +2001,7 @@ footer p {
 }
 
 
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
+/* ================= REDUCED MOTION ================= */
 
 @media (prefers-reduced-motion: reduce) {
 
