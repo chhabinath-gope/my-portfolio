@@ -1,10 +1,11 @@
 "use strict";
 
 
-/* ===============================
-   PORTFOLIO V2.0 JAVASCRIPT
-   Lightweight & Dependency-Free
-================================ */
+/* =========================================================
+   CHHABINATH GOPE
+   PORTFOLIO JAVASCRIPT
+   Lightweight • Dependency-Free
+   ========================================================= */
 
 
 /* ===============================
@@ -18,11 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sections =
         document.querySelectorAll("main section[id]");
-
-    const interactiveCards =
-        document.querySelectorAll(
-            ".skill-card, .project-card, .experience-card, .stat-card"
-        );
 
 
     /* ===============================
@@ -42,16 +38,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const sectionTop =
                 section.offsetTop;
 
-            const sectionHeight =
-                section.offsetHeight;
+            const sectionBottom =
+                sectionTop + section.offsetHeight;
 
 
             if (
                 scrollPosition >= sectionTop &&
-                scrollPosition < sectionTop + sectionHeight
+                scrollPosition < sectionBottom
             ) {
+
                 currentSection =
                     section.getAttribute("id");
+
             }
 
         });
@@ -94,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ===============================
-       SCROLL EVENT
+       PERFORMANCE-FRIENDLY SCROLL
     ================================= */
 
     let ticking = false;
@@ -104,22 +102,26 @@ document.addEventListener("DOMContentLoaded", () => {
         "scroll",
         () => {
 
-            if (!ticking) {
-
-                window.requestAnimationFrame(() => {
-
-                    updateActiveNavigation();
-
-                    ticking = false;
-
-                });
-
-                ticking = true;
-
+            if (ticking) {
+                return;
             }
 
+
+            window.requestAnimationFrame(() => {
+
+                updateActiveNavigation();
+
+                ticking = false;
+
+            });
+
+
+            ticking = true;
+
         },
-        { passive: true }
+        {
+            passive: true
+        }
     );
 
 
@@ -137,11 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     link.getAttribute("href");
 
 
+                /*
+                 Only handle internal
+                 section links.
+                */
+
                 if (
                     !targetId ||
                     !targetId.startsWith("#")
                 ) {
+
                     return;
+
                 }
 
 
@@ -159,15 +168,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 event.preventDefault();
 
 
+                const reducedMotion =
+                    window.matchMedia(
+                        "(prefers-reduced-motion: reduce)"
+                    ).matches;
+
+
                 target.scrollIntoView({
+
                     behavior:
-                        window.matchMedia(
-                            "(prefers-reduced-motion: reduce)"
-                        ).matches
+                        reducedMotion
                             ? "auto"
-                            : "smooth"
+                            : "smooth",
+
+                    block:
+                        "start"
+
                 });
 
+
+                /*
+                 Update URL without
+                 reloading the page.
+                */
 
                 history.replaceState(
                     null,
@@ -182,68 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ===============================
-       SCROLL REVEAL
-    ================================= */
-
-    const prefersReducedMotion =
-        window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-
-    if (
-        "IntersectionObserver" in window &&
-        !prefersReducedMotion
-    ) {
-
-        const revealObserver =
-            new IntersectionObserver(
-                (entries, observer) => {
-
-                    entries.forEach((entry) => {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target.classList.add(
-                                "visible"
-                            );
-
-
-                            observer.unobserve(
-                                entry.target
-                            );
-
-                        }
-
-                    });
-
-                },
-                {
-                    threshold: 0.12
-                }
-            );
-
-
-        interactiveCards.forEach((card) => {
-
-            card.classList.add(
-                "reveal"
-            );
-
-
-            revealObserver.observe(
-                card
-            );
-
-        });
-
-    }
-
-
-    /* ===============================
-       INITIAL STATE
+       INITIAL NAVIGATION STATE
     ================================= */
 
     updateActiveNavigation();
