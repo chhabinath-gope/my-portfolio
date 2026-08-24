@@ -1,213 +1,154 @@
-"use strict";
-
-
 /* =========================================================
    CHHABINATH GOPE
-   PORTFOLIO JAVASCRIPT
-   Lightweight • Dependency-Free
+   DATA SCIENCE PORTFOLIO
+   RESPONSIVE MOBILE NAVIGATION
    ========================================================= */
-
-
-/* ===============================
-   DOM READY
-================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const navigationLinks =
-        document.querySelectorAll(".navbar nav a");
+    const menuToggle = document.getElementById("menuToggle");
+    const mainNav = document.getElementById("mainNav");
 
-    const sections =
-        document.querySelectorAll("main section[id]");
+    if (!menuToggle || !mainNav) {
+        return;
+    }
 
+    /* =========================
+       OPEN / CLOSE MOBILE MENU
+       ========================= */
 
-    /* ===============================
-       ACTIVE NAVIGATION
-    ================================= */
+    menuToggle.addEventListener("click", () => {
 
-    const updateActiveNavigation = () => {
+        const isOpen = mainNav.classList.toggle("active");
 
-        let currentSection = "";
+        menuToggle.classList.toggle("active", isOpen);
 
-        const scrollPosition =
-            window.scrollY + 140;
+        menuToggle.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
 
-
-        sections.forEach((section) => {
-
-            const sectionTop =
-                section.offsetTop;
-
-            const sectionBottom =
-                sectionTop + section.offsetHeight;
-
-
-            if (
-                scrollPosition >= sectionTop &&
-                scrollPosition < sectionBottom
-            ) {
-
-                currentSection =
-                    section.getAttribute("id");
-
-            }
-
-        });
-
-
-        navigationLinks.forEach((link) => {
-
-            const target =
-                link.getAttribute("href");
-
-
-            const isActive =
-                target === `#${currentSection}`;
-
-
-            link.classList.toggle(
-                "active",
-                isActive
-            );
-
-
-            if (isActive) {
-
-                link.setAttribute(
-                    "aria-current",
-                    "page"
-                );
-
-            } else {
-
-                link.removeAttribute(
-                    "aria-current"
-                );
-
-            }
-
-        });
-
-    };
-
-
-    /* ===============================
-       PERFORMANCE-FRIENDLY SCROLL
-    ================================= */
-
-    let ticking = false;
-
-
-    window.addEventListener(
-        "scroll",
-        () => {
-
-            if (ticking) {
-                return;
-            }
-
-
-            window.requestAnimationFrame(() => {
-
-                updateActiveNavigation();
-
-                ticking = false;
-
-            });
-
-
-            ticking = true;
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    /* ===============================
-       SMOOTH NAVIGATION
-    ================================= */
-
-    navigationLinks.forEach((link) => {
-
-        link.addEventListener(
-            "click",
-            (event) => {
-
-                const targetId =
-                    link.getAttribute("href");
-
-
-                /*
-                 Only handle internal
-                 section links.
-                */
-
-                if (
-                    !targetId ||
-                    !targetId.startsWith("#")
-                ) {
-
-                    return;
-
-                }
-
-
-                const target =
-                    document.querySelector(
-                        targetId
-                    );
-
-
-                if (!target) {
-                    return;
-                }
-
-
-                event.preventDefault();
-
-
-                const reducedMotion =
-                    window.matchMedia(
-                        "(prefers-reduced-motion: reduce)"
-                    ).matches;
-
-
-                target.scrollIntoView({
-
-                    behavior:
-                        reducedMotion
-                            ? "auto"
-                            : "smooth",
-
-                    block:
-                        "start"
-
-                });
-
-
-                /*
-                 Update URL without
-                 reloading the page.
-                */
-
-                history.replaceState(
-                    null,
-                    "",
-                    targetId
-                );
-
-            }
+        menuToggle.setAttribute(
+            "aria-label",
+            isOpen
+                ? "Close navigation menu"
+                : "Open navigation menu"
         );
 
     });
 
 
-    /* ===============================
-       INITIAL NAVIGATION STATE
-    ================================= */
+    /* =========================
+       CLOSE MENU AFTER CLICK
+       ========================= */
 
-    updateActiveNavigation();
+    const navLinks = mainNav.querySelectorAll("a");
+
+    navLinks.forEach((link) => {
+
+        link.addEventListener("click", () => {
+
+            mainNav.classList.remove("active");
+
+            menuToggle.classList.remove("active");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuToggle.setAttribute(
+                "aria-label",
+                "Open navigation menu"
+            );
+
+        });
+
+    });
+
+
+    /* =========================
+       CLOSE MENU WHEN CLICKING
+       OUTSIDE NAVBAR
+       ========================= */
+
+    document.addEventListener("click", (event) => {
+
+        const navbar = document.querySelector(".navbar");
+
+        if (!navbar.contains(event.target)) {
+
+            mainNav.classList.remove("active");
+
+            menuToggle.classList.remove("active");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuToggle.setAttribute(
+                "aria-label",
+                "Open navigation menu"
+            );
+
+        }
+
+    });
+
+
+    /* =========================
+       CLOSE MENU ON ESCAPE
+       ========================= */
+
+    document.addEventListener("keydown", (event) => {
+
+        if (event.key === "Escape") {
+
+            mainNav.classList.remove("active");
+
+            menuToggle.classList.remove("active");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuToggle.setAttribute(
+                "aria-label",
+                "Open navigation menu"
+            );
+
+        }
+
+    });
+
+
+    /* =========================
+       CLOSE MENU WHEN SCREEN
+       BECOMES DESKTOP SIZE
+       ========================= */
+
+    window.addEventListener("resize", () => {
+
+        if (window.innerWidth > 850) {
+
+            mainNav.classList.remove("active");
+
+            menuToggle.classList.remove("active");
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuToggle.setAttribute(
+                "aria-label",
+                "Open navigation menu"
+            );
+
+        }
+
+    });
 
 });
